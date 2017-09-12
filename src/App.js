@@ -20,7 +20,7 @@ class App extends Component {
         <div className="App">
 
           <header className="header">
-            Welcome to Diariamente
+            <Link to="/">Welcome to Diariamente</Link>
           </header>
 
           <div className="container">

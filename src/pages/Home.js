@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { showCategories, showPosts } from '../actions'
+import { showCategories, showPosts, addPost, showModal, hideModal } from '../actions'
 import { getCategories, getPosts } from '../utils/api'
+import Modal from 'react-modal'
 
 import {
     Link
@@ -10,9 +11,39 @@ import {
 import Moment from 'react-moment';
 import 'moment-timezone';
 
+const modalStyles = {
+    content: {
+        width: '600',
+        top: '30%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)'
+    }
+};
+
 class HomePage extends Component {
+
+    constructor() {
+        super();
+
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+    }
+
+    openModal() {
+        const { showModal } = this.props
+        showModal('ADD_POST_MODAL');
+    }
+
+    closeModal() {
+        const { hideModal } = this.props
+        hideModal()
+    }
+
     componentWillMount() {
-        const { showCategories, showPosts } = this.props;
+        const { showCategories, showPosts, showModal, closeModal } = this.props;
 
         getCategories()
             .then((categories) => {
@@ -26,15 +57,15 @@ class HomePage extends Component {
     }
 
     render() {
-        const { categories, posts } = this.props
+        const { categories, posts, modal } = this.props
 
         return (
             <div>
-                <h3>Categories</h3>
+                <h2>Categories</h2>
                 <ul className="category-list">
                     {categories.map((category) => (
-                        <Link to={category.name}>
-                            <li key={category.name}>
+                        <Link key={category.name} to={category.name}>
+                            <li>
                                 <p>{category.name}</p>
                             </li>
                         </Link>
@@ -43,15 +74,15 @@ class HomePage extends Component {
 
                 <hr />
 
-                <h3>Posts</h3>
-                <button>Add a new post</button>
+                <h2>Posts</h2>
+                <button onClick={this.openModal}>Add a new post</button>
 
                 <table className="post-list">
                     <thead>
                         <tr>
-                            <a href="#"><th>#</th></a>
+                            <th>#</th>
                             <th>Title</th>
-                            <a href="#"><th>Date</th></a>
+                            <th>Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -72,16 +103,31 @@ class HomePage extends Component {
                         ))}
                     </tbody>
                 </table>
+
+                <Modal
+                    isOpen={modal.modalProps.modalIsOpen}
+                    onAfterOpen={this.afterOpenModal}
+                    onRequestClose={this.closeModal}
+                    style={modalStyles}
+                >
+
+                    <h2 className="no-margin-top">Add new post</h2>
+                    <button onClick={this.closeModal}>close</button>
+
+                    <div>I am a modal</div>
+                </Modal>
+
             </div>
         )
     }
 }
 
-function mapStateToProps({ categories, posts }) {
+function mapStateToProps({ categories, posts, modal }) {
     return (
         {
             categories,
-            posts
+            posts,
+            modal
         }
     )
 }
@@ -90,6 +136,9 @@ function mapDispatchToProps(dispatch) {
     return {
         showCategories: (data) => { dispatch(showCategories(data)) },
         showPosts: (data) => { dispatch(showPosts(data)) },
+        showModal: (data) => { dispatch(showModal(data)) },
+        hideModal: (data) => { dispatch(hideModal(data)) },
+        addPost: (data) => { dispatch(addPost(data)) },
     }
 }
 

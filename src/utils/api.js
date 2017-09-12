@@ -10,3 +10,8 @@ export function getPosts() {
     return fetch(url + '/posts', header)
         .then((res) => res.json())
 }
+
+export function getPost(postID) {
+    return fetch(url + '/posts/' + postID, header)
+        .then((res) => res.json())
+}
