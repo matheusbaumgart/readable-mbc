@@ -4,8 +4,9 @@ import {
     SHOW_POSTS,
     SHOW_POST,
     SHOW_MODAL, HIDE_MODAL,
-    ADD_POST
+    SAVE_POST,
 } from '../actions'
+import { reducer as formReducer } from 'redux-form'
 
 function categories(state = [], action) {
     switch (action.type) {
@@ -38,8 +39,8 @@ function post(state = [], action) {
             return (
                 post
             )
-        case ADD_POST:
-            const { newPost } = action
+        case SAVE_POST:
+            const newPost = action
             return (
                 newPost
             )
@@ -69,10 +70,10 @@ function modal(state = modalInitialState, action) {
     }
 }
 
-
 export default combineReducers({
     categories,
     posts,
     post,
-    modal
+    modal,
+    form: formReducer
 })

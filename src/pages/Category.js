@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PostsList from '../components/PostsList'
 
 class CategoryPage extends Component {
     render() {
@@ -8,6 +9,8 @@ class CategoryPage extends Component {
             <div>
                 <span>Showing all posts about</span>
                 <h2 className="no-margin-top">{categoryName}</h2>
+
+                <PostsList category={categoryName}/>
             </div>
         );
     }

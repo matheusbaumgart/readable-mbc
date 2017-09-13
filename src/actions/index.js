@@ -3,8 +3,7 @@ export const SHOW_POSTS = 'SHOW_POSTS'
 export const SHOW_POST = 'SHOW_POST'
 export const SHOW_MODAL = 'SHOW_MODAL'
 export const HIDE_MODAL = 'HIDE_MODAL'
-export const ADD_POST = 'ADD_POST'
-
+export const SAVE_POST = 'SAVE_POST'
 
 export function showCategories(categories) {
   return {
@@ -27,13 +26,6 @@ export function showPost(post) {
   }
 }
 
-export function addPost(post){
-  return {
-    type: ADD_POST,
-    post
-  }
-}
-
 export function showModal(modalType){
   return {
     type: SHOW_MODAL,
@@ -48,5 +40,12 @@ export function hideModal(modal){
   return {
     type: HIDE_MODAL,
     modal
+  }
+}
+
+export function savePost(values){
+  return {
+    type: SAVE_POST,
+    values
   }
 }

@@ -12,6 +12,10 @@ body {
   margin-top: 0;
 }
 
+.margin-right{
+  margin-right: 15px;
+}
+
 .header{
   font-size: 20px;
   color: #fff;
@@ -35,7 +39,7 @@ button{
   font-size: 14px;
   color: #fff;
   background: #111;
-  border: none;
+  border: 1px solid #111;
   border-radius: 2px;
   padding: 8px 15px;
   cursor: pointer;
@@ -44,6 +48,18 @@ button{
 button:hover{
   background: #333;
   cursor: pointer;
+}
+
+.button-border{
+  background: none;
+  color: #111;
+  border: 1px solid #111;
+}
+
+.button-border:hover{
+  background: none;
+  color: #333;
+  border: 1px solid #333;
 }
 
 hr{

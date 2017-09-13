@@ -6,8 +6,15 @@ export function getCategories() {
         .then((res) => res.json())
 }
 
-export function getPosts() {
-    return fetch(url + '/posts', header)
+export function getPosts(category) {
+    var getPostsURL = url + '/posts';
+
+    if (category) {
+        // Why is 'LET' not reassiging the variable? Isn't that the behaviour of 'CONST'?
+        var getPostsURL = url + '/' + category + '/posts';
+    }
+
+    return fetch(getPostsURL, header)
         .then((res) => res.json())
 }
 
