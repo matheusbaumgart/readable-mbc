@@ -50,10 +50,3 @@ export function hideModal(modal){
     modal
   }
 }
-
-export function savePost(values){
-  return {
-    type: SAVE_POST,
-    values
-  }
-}

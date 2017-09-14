@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { showModal, hideModal, savePost } from '../actions'
+import { showModal, hideModal } from '../actions'
 import Modal from 'react-modal'
 import { Field, reduxForm } from 'redux-form'
+import { addPost } from '../utils/api'
 
 const modalStyles = {
     content: {
@@ -33,8 +34,13 @@ class AddPostModal extends Component {
         this.props.hideModal()
     }
 
-    sendFormData = (values) => {
-        this.props.savePost(values);
+    sendFormData = (post) => {
+        addPost(post)
+        .then(() => {
+            console.log('====================================');
+            console.log('Post added sucessfully');
+            console.log('====================================');
+        })
     }
 
     render() {
@@ -71,7 +77,7 @@ class AddPostModal extends Component {
                             <label>Content</label>
                             <div>
                                 <Field
-                                    name="content"
+                                    name="body"
                                     component="textarea"
                                     placeholder="Add your content here"
                                 />
@@ -97,9 +103,10 @@ class AddPostModal extends Component {
                                     component="select"
                                     placeholder="category"
                                 >
-                                    <option value="ff0000">Red</option>
-                                    <option value="00ff00">Green</option>
-                                    <option value="0000ff">Blue</option>
+                                    <option value=""></option>
+                                    <option value="react">react</option>
+                                    <option value="redux">redux</option>
+                                    <option value="udacity">udacity</option>
                                 </Field>
                             </div>
                         </div>
@@ -135,8 +142,7 @@ function mapStateToProps({ modal, post }) {
 function mapDispatchToProps(dispatch) {
     return {
         showModal: (data) => { dispatch(showModal(data)) },
-        hideModal: (data) => { dispatch(hideModal(data)) },
-        savePost: (data) => { dispatch(savePost(data)) },
+        hideModal: (data) => { dispatch(hideModal(data)) }
     }
 }
 

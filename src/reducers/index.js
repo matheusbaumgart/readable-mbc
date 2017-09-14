@@ -38,11 +38,6 @@ function post(state = {}, action) {
             return (
                 post
             )
-        case SAVE_POST:
-            const newPost = action
-            return (
-                newPost
-            )
         default:
             return state
     }

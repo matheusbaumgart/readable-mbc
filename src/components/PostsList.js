@@ -73,10 +73,10 @@ class PostsList extends Component {
                 <table className="post-list">
                     <thead>
                         <tr>
-                            <th onClick={() => this.handleSort('voteScore')}>#</th>
+                            <th className="th-filterable" onClick={() => this.handleSort('voteScore')}>#</th>
                             <th>Title</th>
                             <th>Category</th>
-                            <th onClick={() => this.handleSort('date')}>Date</th>
+                            <th className="th-filterable" onClick={() => this.handleSort('date')}>Date</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -13,7 +13,7 @@ class HomePage extends Component {
 
                 <hr />
 
-                <h2>Posts</h2>
+                <h2>All Posts</h2>
                 <PostsList />
             </div>
         )

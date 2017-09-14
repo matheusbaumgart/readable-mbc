@@ -105,6 +105,15 @@ hr{
   text-align: left;
 }
 
+.post-list .th-filterable{
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.post-list .th-filterable:hover{
+  background-color: #eee;
+}
+
 .post-list thead tr{
     background: #f3f3f3;
 }
