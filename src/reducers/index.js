@@ -5,6 +5,7 @@ import {
     SHOW_POST,
     SHOW_MODAL, HIDE_MODAL,
     SAVE_POST,
+    CHANGE_SORT
 } from '../actions'
 import { reducer as formReducer } from 'redux-form'
 
@@ -24,15 +25,13 @@ function posts(state = [], action) {
     switch (action.type) {
         case SHOW_POSTS:
             const { posts } = action
-            return (
-                posts
-            )
+            return posts
         default:
             return state
     }
 }
 
-function post(state = [], action) {
+function post(state = {}, action) {
     switch (action.type) {
         case SHOW_POST:
             const { post } = action
@@ -44,6 +43,16 @@ function post(state = [], action) {
             return (
                 newPost
             )
+        default:
+            return state
+    }
+}
+
+function sortBy(state = 'voteScoreHighest', action) {
+    switch (action.type) {
+        case CHANGE_SORT:
+            const { sortBy } = action
+            return sortBy
         default:
             return state
     }
@@ -73,6 +82,7 @@ function modal(state = modalInitialState, action) {
 export default combineReducers({
     categories,
     posts,
+    sortBy,
     post,
     modal,
     form: formReducer

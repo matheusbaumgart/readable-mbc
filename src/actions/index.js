@@ -1,5 +1,6 @@
 export const SHOW_CATEGORIES = 'SHOW_CATEGORIES'
 export const SHOW_POSTS = 'SHOW_POSTS'
+export const CHANGE_SORT = 'CHANGE_SORT'
 export const SHOW_POST = 'SHOW_POST'
 export const SHOW_MODAL = 'SHOW_MODAL'
 export const HIDE_MODAL = 'HIDE_MODAL'
@@ -16,6 +17,13 @@ export function showPosts(posts) {
   return {
     type: SHOW_POSTS,
     posts
+  }
+}
+
+export function changeSorting(sortBy){
+  return {
+    type: CHANGE_SORT,
+    sortBy
   }
 }
 

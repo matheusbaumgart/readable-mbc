@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import {
     Link
 } from 'react-router-dom'
-import { showPosts } from '../actions'
+import { showPosts, changeSorting } from '../actions'
 import { getPosts } from '../utils/api'
 import AddPostModal from '../components/AddPostModal'
 
@@ -11,6 +11,7 @@ import Moment from 'react-moment';
 import 'moment-timezone';
 
 class PostsList extends Component {
+
     componentWillMount() {
         const { showPosts, category } = this.props;
 
@@ -20,8 +21,50 @@ class PostsList extends Component {
             })
     }
 
+    handleSort(col) {
+        const { changeSorting, sortBy } = this.props;
+
+        if (col === 'voteScore') {
+            if (sortBy === 'voteScoreHighest') {
+                changeSorting('voteScoreLowest')
+            }
+            else{
+                changeSorting('voteScoreHighest')
+            }
+        }
+        if (col === 'date') {
+            if (sortBy === 'mostRecent') {
+                changeSorting('leastRecent')
+            }
+            else {
+                changeSorting('mostRecent')
+            }
+        }
+    }
+
     render() {
-        const { posts, showAdd = true, category } = this.props
+        const { posts, sortBy, showAdd = true, category } = this.props
+        var filteredPosts = posts;
+
+        // Ordering by Highest to Lowest Score
+        if (sortBy === 'voteScoreHighest') {
+            filteredPosts = posts.sort(function (a, b) { return b.voteScore - a.voteScore; })
+        }
+
+        // Ordering by Lowest to Highest Score
+        if (sortBy === 'voteScoreLowest') {
+            filteredPosts = posts.sort(function (a, b) { return a.voteScore - b.voteScore; })
+        }
+
+        // Ordering by Lowest to Highest Score
+        if (sortBy === 'mostRecent') {
+            filteredPosts = posts.sort(function (a, b) { return b.timestamp - a.timestamp; })
+        }
+
+        // Ordering by Lowest to Highest Score
+        if (sortBy === 'leastRecent') {
+            filteredPosts = posts.sort(function (a, b) { return a.timestamp - b.timestamp; })
+        }
 
         return (
             <div>
@@ -30,14 +73,14 @@ class PostsList extends Component {
                 <table className="post-list">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th onClick={() => this.handleSort('voteScore')}>#</th>
                             <th>Title</th>
                             <th>Category</th>
-                            <th>Date</th>
+                            <th onClick={() => this.handleSort('date')}>Date</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {posts.map((post) => (
+                        {filteredPosts.map((post) => (
                             <tr key={post.title}>
                                 <td>
                                     {post.voteScore}
@@ -62,17 +105,19 @@ class PostsList extends Component {
     }
 }
 
-function mapStateToProps({ posts }) {
+function mapStateToProps({ posts, sortBy }) {
     return (
         {
-            posts
+            posts,
+            sortBy
         }
     )
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        showPosts: (data) => { dispatch(showPosts(data)) },
+        showPosts: (posts) => { dispatch(showPosts(posts)) },
+        changeSorting: (sortBy) => { dispatch(changeSorting(sortBy)) },
     }
 }
 
