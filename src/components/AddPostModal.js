@@ -1,19 +1,21 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { showModal, hideModal } from '../actions'
+import { showModal, hideModal, showCategories } from '../actions'
 import Modal from 'react-modal'
 import { Field, reduxForm } from 'redux-form'
 import { addPost } from '../utils/api'
+import { getCategories } from '../utils/api'
 
 const modalStyles = {
     content: {
         width: '600px',
-        top: '30%',
+        top: '40%',
         left: '50%',
         right: 'auto',
         bottom: 'auto',
         marginRight: '-50%',
-        transform: 'translate(-50%, -50%)'
+        transform: 'translate(-50%, -50%)',
+        background: '#f1f1f1'
     }
 }
 
@@ -26,6 +28,15 @@ class AddPostModal extends Component {
         this.closeModal = this.closeModal.bind(this);
     }
 
+    componentWillMount() {
+        const { showCategories } = this.props;
+
+        getCategories()
+            .then((categories) => {
+                showCategories(categories)
+            })
+    }
+
     openModal() {
         this.props.showModal('ADD_POST_MODAL');
     }
@@ -36,16 +47,15 @@ class AddPostModal extends Component {
 
     sendFormData = (post) => {
         addPost(post)
-        .then(() => {
-            console.log('====================================');
-            console.log('Post added sucessfully');
-            console.log('====================================');
-        })
+            .then(() => {
+                console.log('====================================');
+                console.log('Post added sucessfully');
+                console.log('====================================');
+            })
     }
 
     render() {
-        const { modal } = this.props
-        const { handleSubmit, pristine, submitting } = this.props
+        const { modal, handleSubmit, pristine, submitting, categories } = this.props
 
         return (
             <div>
@@ -62,7 +72,7 @@ class AddPostModal extends Component {
                     <h2 className="no-margin-top">Add new post</h2>
 
                     <form onSubmit={handleSubmit(this.sendFormData)}>
-                        <div>
+                        <div className="input-group">
                             <label>Title</label>
                             <div>
                                 <Field
@@ -73,7 +83,7 @@ class AddPostModal extends Component {
                                 />
                             </div>
                         </div>
-                        <div>
+                        <div className="input-group">
                             <label>Content</label>
                             <div>
                                 <Field
@@ -83,7 +93,7 @@ class AddPostModal extends Component {
                                 />
                             </div>
                         </div>
-                        <div>
+                        <div className="input-group ">
                             <label>Author</label>
                             <div>
                                 <Field
@@ -95,7 +105,7 @@ class AddPostModal extends Component {
                             </div>
                         </div>
 
-                        <div>
+                        <div className="input-group">
                             <label>Category</label>
                             <div>
                                 <Field
@@ -104,16 +114,19 @@ class AddPostModal extends Component {
                                     placeholder="category"
                                 >
                                     <option value=""></option>
-                                    <option value="react">react</option>
-                                    <option value="redux">redux</option>
-                                    <option value="udacity">udacity</option>
+
+                                    {categories.map((category) => (
+                                        <option value={category.name} key={category.name}>
+                                            {category.name}
+                                        </option>
+                                    ))}
                                 </Field>
                             </div>
                         </div>
 
-                        <hr />
+                        <br />
 
-                        <div>
+                        <div className="align-right">
                             <button className="button-border margin-right" onClick={this.closeModal}>
                                 Cancel
                             </button>
@@ -130,11 +143,12 @@ class AddPostModal extends Component {
 }
 
 
-function mapStateToProps({ modal, post }) {
+function mapStateToProps({ modal, post, categories }) {
     return (
         {
             modal,
-            post
+            post,
+            categories
         }
     )
 }
@@ -142,7 +156,8 @@ function mapStateToProps({ modal, post }) {
 function mapDispatchToProps(dispatch) {
     return {
         showModal: (data) => { dispatch(showModal(data)) },
-        hideModal: (data) => { dispatch(hideModal(data)) }
+        hideModal: (data) => { dispatch(hideModal(data)) },
+        showCategories: (data) => { dispatch(showCategories(data)) }
     }
 }
 
