@@ -3,10 +3,9 @@ import { connect } from 'react-redux'
 import {
     Link
 } from 'react-router-dom'
-import { showPosts, changeSorting } from '../actions'
+import { showPosts, changeSorting, changeOrder } from '../actions'
 import { getPosts } from '../utils/api'
 import AddPostModal from '../components/AddPostModal'
-import { Field, reduxForm } from 'redux-form'
 
 import Moment from 'react-moment';
 import 'moment-timezone';
@@ -22,49 +21,20 @@ class PostsList extends Component {
             })
     }
 
-    handleSort(col) {
-        const { changeSorting, sortBy } = this.props;
-
-        if (col === 'voteScore') {
-            if (sortBy === 'voteScoreHighest') {
-                changeSorting('voteScoreLowest')
-            }
-            else {
-                changeSorting('voteScoreHighest')
-            }
-        }
-        if (col === 'date') {
-            if (sortBy === 'mostRecent') {
-                changeSorting('leastRecent')
-            }
-            else {
-                changeSorting('mostRecent')
-            }
-        }
+    handleOrder = (option) => {
+        const { changeOrder } = this.props;
+        changeOrder(option.target.value)
     }
 
     render() {
-        const { posts, sortBy, showAdd = true, category } = this.props
+        const { posts, orderBy, showAdd = true } = this.props
         var filteredPosts = posts;
 
-        // Ordering by Highest to Lowest Score
-        if (sortBy === 'voteScoreHighest') {
-            filteredPosts = posts.sort(function (a, b) { return b.voteScore - a.voteScore; })
-        }
-
         // Ordering by Lowest to Highest Score
-        if (sortBy === 'voteScoreLowest') {
-            filteredPosts = posts.sort(function (a, b) { return a.voteScore - b.voteScore; })
-        }
-
-        // Ordering by Lowest to Highest Score
-        if (sortBy === 'mostRecent') {
+        if (orderBy === 'date') {
             filteredPosts = posts.sort(function (a, b) { return b.timestamp - a.timestamp; })
-        }
-
-        // Ordering by Lowest to Highest Score
-        if (sortBy === 'leastRecent') {
-            filteredPosts = posts.sort(function (a, b) { return a.timestamp - b.timestamp; })
+        } else {
+            filteredPosts = posts.sort(function (a, b) { return b.voteScore - a.voteScore; })            
         }
 
         return (
@@ -75,27 +45,21 @@ class PostsList extends Component {
                     </div>
 
                     <div>
-                        <form>
-                            <span>Order by </span>
-                            <Field
-                                name="orderBySelect"
-                                component="select"
-                                placeholder="order by"
-                            >
-                                <option value="react">Vote</option>
-                                <option value="redux">Date</option>
-                            </Field>
-                        </form>
+                        <span>Order by </span>
+                        <select onChange={this.handleOrder} name="orderBy" placeholder="order by">
+                            <option value="vote">Vote</option>
+                            <option value="date">Date</option>
+                        </select>
                     </div>
                 </div>
 
                 <table className="post-list">
                     <thead>
                         <tr>
-                            <th className="th-filterable" onClick={() => this.handleSort('voteScore')}>Vote</th>
+                            <th>Vote</th>
                             <th>Title</th>
                             <th>Category</th>
-                            <th className="th-filterable" onClick={() => this.handleSort('date')}>Date</th>
+                            <th>Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -124,11 +88,12 @@ class PostsList extends Component {
     }
 }
 
-function mapStateToProps({ posts, sortBy }) {
+function mapStateToProps({ posts, sortBy, orderBy }) {
     return (
         {
             posts,
-            sortBy
+            sortBy,
+            orderBy
         }
     )
 }
@@ -137,14 +102,11 @@ function mapDispatchToProps(dispatch) {
     return {
         showPosts: (posts) => { dispatch(showPosts(posts)) },
         changeSorting: (sortBy) => { dispatch(changeSorting(sortBy)) },
+        changeOrder: (orderBy) => { dispatch(changeOrder(orderBy)) },
     }
 }
 
-PostsList = connect(
+export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(PostsList)
-
-export default reduxForm({
-    form: 'changeOrderBy' // a unique name for this form
-})(PostsList);

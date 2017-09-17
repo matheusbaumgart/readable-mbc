@@ -5,7 +5,8 @@ import {
     SHOW_POST,
     SHOW_MODAL, HIDE_MODAL,
     SAVE_POST,
-    CHANGE_SORT
+    CHANGE_SORT,
+    CHANGE_ORDER
 } from '../actions'
 import { reducer as formReducer } from 'redux-form'
 
@@ -53,6 +54,16 @@ function sortBy(state = 'voteScoreHighest', action) {
     }
 }
 
+function orderBy(state = 'vote', action) {
+    switch (action.type) {
+        case CHANGE_ORDER:
+            const { orderBy } = action
+            return orderBy
+        default:
+            return state
+    }
+}
+
 const modalInitialState = {
     modalType: null,
     modalProps: {
@@ -78,6 +89,7 @@ export default combineReducers({
     categories,
     posts,
     sortBy,
+    orderBy,
     post,
     modal,
     form: formReducer
