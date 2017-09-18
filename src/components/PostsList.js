@@ -4,8 +4,10 @@ import {
     Link
 } from 'react-router-dom'
 import { showPosts, changeSorting, changeOrder } from '../actions'
-import { getPosts } from '../utils/api'
+import { getPosts, changeScore } from '../utils/api'
 import AddPostModal from '../components/AddPostModal'
+
+import { Icon } from 'react-fa'
 
 import Moment from 'react-moment';
 import 'moment-timezone';
@@ -26,6 +28,14 @@ class PostsList extends Component {
         changeOrder(option.target.value)
     }
 
+    handleVoteUp = (e) => {
+        changeScore(e.target.dataset.id, 'upVote');
+    }
+    
+    handleVoteDown = (e) => {
+        changeScore(e.target.dataset.id, 'downVote');
+    }
+
     render() {
         const { posts, orderBy, showAdd = true } = this.props
         var filteredPosts = posts;
@@ -34,7 +44,7 @@ class PostsList extends Component {
         if (orderBy === 'date') {
             filteredPosts = posts.sort(function (a, b) { return b.timestamp - a.timestamp; })
         } else {
-            filteredPosts = posts.sort(function (a, b) { return b.voteScore - a.voteScore; })            
+            filteredPosts = posts.sort(function (a, b) { return b.voteScore - a.voteScore; })
         }
 
         return (
@@ -60,13 +70,16 @@ class PostsList extends Component {
                             <th>Title</th>
                             <th>Category</th>
                             <th>Date</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredPosts.map((post) => (
                             <tr key={post.title}>
                                 <td>
-                                    {post.voteScore}
+                                    <div className="vote-score">{post.voteScore}</div>
+                                    &nbsp;<Icon data-id={post.id} onClick={this.handleVoteDown} className="vote-icon down" name="caret-down" />  
+                                    &nbsp;<Icon data-id={post.id} onClick={this.handleVoteUp} className="vote-icon up" name="caret-up" />
                                 </td>
                                 <td>
                                     <Link to={{ pathname: post.category + '/' + post.id, }}>
@@ -78,6 +91,10 @@ class PostsList extends Component {
                                 </td>
                                 <td>
                                     <Moment format="YYYY/MM/DD HH:mm">{post.timestamp}</Moment>
+                                </td>
+                                <td>
+                                    <button>Edit</button> &nbsp;
+                                    <button>Delete</button>
                                 </td>
                             </tr>
                         ))}

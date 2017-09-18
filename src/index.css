@@ -171,3 +171,36 @@ hr{
 .ReactModal__Overlay--after-open{
   background-color: rgba(0, 0, 0, 0.85) !important;
 }
+
+
+/* VOTE */
+.vote-score{
+  width: 25px;
+  display: inline-block;
+  text-align: center;
+  font-weight: 600;
+  padding: 8px;
+  color: #fff;
+  background-color: #666;
+  border-radius: 3px;
+}
+
+.vote-icon{
+  font-size: 18px !important;
+  padding: 8px;
+  background-color: rgba(240, 240, 240, 0.94);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.vote-icon:hover{
+  background-color: #e9e9e9;
+}
+
+.vote-icon.up{
+  color: green;
+}
+
+.vote-icon.down{
+  color: red;
+}

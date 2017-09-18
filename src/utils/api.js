@@ -30,15 +30,30 @@ export function addPost(post) {
         headers: {
             'Authorization': 'udacity-readable',
             'Content-Type': 'application/json'
-          },
+        },
         body: JSON.stringify({
-          author: post.author,
-          body: post.body,
-          title: post.title,
-          category: post.category,
-          timestamp: Date.now(),
-          id: uuidv1()
+            author: post.author,
+            body: post.body,
+            title: post.title,
+            category: post.category,
+            timestamp: Date.now(),
+            id: uuidv1()
         })
-      }).then(res => res.json())
+    }).then(res => res.json())
+        .then(data => data)
+}
+
+export function changeScore(postID, option) {
+
+    return fetch(`${url}/posts/${postID}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'udacity-readable',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            option: option
+        })
+    }).then(res => res.json())
         .then(data => data)
 }

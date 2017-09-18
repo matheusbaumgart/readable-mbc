@@ -6,6 +6,7 @@
     "moment-timezone": "^0.5.13",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-fa": "^4.2.0",
     "react-modal": "^2.3.2",
     "react-moment": "^0.6.5",
     "react-redux": "^5.0.6",
