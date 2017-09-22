@@ -3,6 +3,8 @@ import { getPost } from '../utils/api'
 import { connect } from 'react-redux'
 import { showPost } from '../actions'
 
+import Comments from '../components/Comments'
+
 import Moment from 'react-moment';
 import 'moment-timezone';
 
@@ -11,10 +13,9 @@ class PostPage extends Component {
         const postID = this.props.match.params.post_id;
         const { showPost } = this.props;
 
-        getPost(postID)
-            .then((post) => {
-                showPost(post)
-            })
+        getPost(postID).then((post) => {
+            showPost(post)
+        })
     }
 
     render() {
@@ -31,6 +32,8 @@ class PostPage extends Component {
                         <p>{post.body}</p>
                     </div>
                 }
+
+                <Comments />
             </div>
         );
     }

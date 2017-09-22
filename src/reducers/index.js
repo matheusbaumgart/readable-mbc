@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import { reducer as formReducer } from 'redux-form'
 import {
     SHOW_CATEGORIES,
     SHOW_POSTS,
@@ -6,16 +7,15 @@ import {
     SHOW_MODAL, HIDE_MODAL,
     SAVE_POST,
     CHANGE_SORT,
-    CHANGE_ORDER
+    CHANGE_ORDER,
+    SHOW_COMMENTS
 } from '../actions'
-import { reducer as formReducer } from 'redux-form'
 
 function categories(state = [], action) {
     switch (action.type) {
         case SHOW_CATEGORIES:
-            const { categories } = action
             return (
-                categories
+                action.categories
             )
         default:
             return state
@@ -25,8 +25,7 @@ function categories(state = [], action) {
 function posts(state = [], action) {
     switch (action.type) {
         case SHOW_POSTS:
-            const { posts } = action
-            return posts
+            return action.posts
         default:
             return state
     }
@@ -35,9 +34,8 @@ function posts(state = [], action) {
 function post(state = {}, action) {
     switch (action.type) {
         case SHOW_POST:
-            const { post } = action
             return (
-                post
+                action.post
             )
         default:
             return state
@@ -47,8 +45,7 @@ function post(state = {}, action) {
 function sortBy(state = 'voteScoreHighest', action) {
     switch (action.type) {
         case CHANGE_SORT:
-            const { sortBy } = action
-            return sortBy
+            return action.sortBy
         default:
             return state
     }
@@ -57,8 +54,21 @@ function sortBy(state = 'voteScoreHighest', action) {
 function orderBy(state = 'vote', action) {
     switch (action.type) {
         case CHANGE_ORDER:
-            const { orderBy } = action
-            return orderBy
+            return action.orderBy
+        default:
+            return state
+    }
+}
+
+function comments(state = {}, action) {
+    const comments = action.comments;
+
+    switch (action.type) {
+        case SHOW_COMMENTS:
+            return Object.assign({}, state, {
+                ...state.comments,
+                comments
+            })
         default:
             return state
     }
@@ -88,6 +98,7 @@ function modal(state = modalInitialState, action) {
 export default combineReducers({
     categories,
     posts,
+    comments,
     sortBy,
     orderBy,
     post,

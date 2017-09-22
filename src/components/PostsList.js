@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import {
     Link
 } from 'react-router-dom'
-import { showPosts, changeSorting, changeOrder } from '../actions'
-import { getPosts, changeScore } from '../utils/api'
+import { showPosts, changeSorting, changeOrder, showComments } from '../actions'
+import { getPosts, changeScore, editPost, deletePost, getComments } from '../utils/api'
 import AddPostModal from '../components/AddPostModal'
 
 import { Icon } from 'react-fa'
@@ -15,12 +15,28 @@ import 'moment-timezone';
 class PostsList extends Component {
 
     componentWillMount() {
+        this.getPostsList();
+        this.getCommentsList();
+    }
+
+    getPostsList = () => {
         const { showPosts, category } = this.props;
 
-        getPosts(category)
-            .then((posts) => {
-                showPosts(posts)
+        getPosts(category).then((posts) => {
+            showPosts(posts)
+        })
+    }
+
+    getCommentsList = () => {
+        const { showComments, category } = this.props;
+
+        getPosts(category).then((posts) => {
+            posts.map((post) => {
+                getComments(post.id).then((comments) => {
+                    showComments(comments)
+                })
             })
+        })
     }
 
     handleOrder = (option) => {
@@ -30,10 +46,22 @@ class PostsList extends Component {
 
     handleVoteUp = (e) => {
         changeScore(e.target.dataset.id, 'upVote');
+        this.getPostsList();
+
     }
-    
+
     handleVoteDown = (e) => {
         changeScore(e.target.dataset.id, 'downVote');
+        this.getPostsList();
+    }
+
+    editPost = (e) => {
+        editPost(e.target.dataset.id)
+    }
+
+    deletePost = (e) => {
+        deletePost(e.target.dataset.id)
+        this.getPostsList();
     }
 
     render() {
@@ -74,30 +102,34 @@ class PostsList extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredPosts.map((post) => (
-                            <tr key={post.title}>
-                                <td>
-                                    <div className="vote-score">{post.voteScore}</div>
-                                    &nbsp;<Icon data-id={post.id} onClick={this.handleVoteDown} className="vote-icon down" name="caret-down" />  
-                                    &nbsp;<Icon data-id={post.id} onClick={this.handleVoteUp} className="vote-icon up" name="caret-up" />
-                                </td>
-                                <td>
-                                    <Link to={{ pathname: post.category + '/' + post.id, }}>
-                                        {post.title}
-                                    </Link>
-                                </td>
-                                <td>
-                                    {post.category}
-                                </td>
-                                <td>
-                                    <Moment format="YYYY/MM/DD HH:mm">{post.timestamp}</Moment>
-                                </td>
-                                <td>
-                                    <button>Edit</button> &nbsp;
-                                    <button>Delete</button>
-                                </td>
-                            </tr>
-                        ))}
+                        {filteredPosts.map((post) =>
+                            !post.deleted &&
+                            (
+                                <tr key={post.title}>
+                                    <td>
+                                        <div className="vote-score">{post.voteScore}</div>
+                                        &nbsp;<Icon data-id={post.id} onClick={this.handleVoteDown} className="vote-icon down" name="caret-down" />
+                                        &nbsp;<Icon data-id={post.id} onClick={this.handleVoteUp} className="vote-icon up" name="caret-up" />
+                                    </td>
+                                    <td>
+                                        <Link to={{ pathname: post.category + '/' + post.id, }}>
+                                            {post.title}
+                                        </Link>
+                                    </td>
+                                    <td>
+                                        {post.category}
+                                    </td>
+                                    <td>
+                                        <Moment format="YYYY/MM/DD HH:mm">{post.timestamp}</Moment>
+                                    </td>
+                                    <td>
+                                        <button data-id={post.id}>
+                                        </button> &nbsp;
+                                        <button data-id={post.id} onClick={this.editPost}>Edit</button> &nbsp;
+                                        <button data-id={post.id} onClick={this.deletePost}>Delete</button>
+                                    </td>
+                                </tr>
+                            ))}
                     </tbody>
                 </table>
             </div>
@@ -105,12 +137,13 @@ class PostsList extends Component {
     }
 }
 
-function mapStateToProps({ posts, sortBy, orderBy }) {
+function mapStateToProps({ posts, sortBy, orderBy, comments }) {
     return (
         {
             posts,
             sortBy,
-            orderBy
+            orderBy,
+            comments
         }
     )
 }
@@ -120,6 +153,7 @@ function mapDispatchToProps(dispatch) {
         showPosts: (posts) => { dispatch(showPosts(posts)) },
         changeSorting: (sortBy) => { dispatch(changeSorting(sortBy)) },
         changeOrder: (orderBy) => { dispatch(changeOrder(orderBy)) },
+        showComments: (comments) => { dispatch(showComments(comments)) },
     }
 }
 

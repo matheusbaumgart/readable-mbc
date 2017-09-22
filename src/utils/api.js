@@ -43,6 +43,31 @@ export function addPost(post) {
         .then(data => data)
 }
 
+export function editPost(post) {
+    return fetch(`${url}/posts/${post.id}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': 'udacity-readable',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: post.title,
+            body: post.body
+        })
+    }).then(res => res.json())
+        .then(data => data)
+}
+
+export function deletePost(postId) {
+    return fetch(`${url}/posts/${postId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'udacity-readable',
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
 export function changeScore(postID, option) {
 
     return fetch(`${url}/posts/${postID}`, {
@@ -56,4 +81,10 @@ export function changeScore(postID, option) {
         })
     }).then(res => res.json())
         .then(data => data)
+}
+
+// GET /posts/:id/comments
+export function getComments(postID) {
+    return fetch(`${url}/posts/${postID}/comments`, header)
+        .then((res) => res.json())
 }
